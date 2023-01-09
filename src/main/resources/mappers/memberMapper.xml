@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.spring.javawspring.dao.MemberDAO">
+	<select id="getMemberIdCheck" resultType="com.spring.javawspring.vo.MemberVO">
+		select * from member2 where mid = #{mid};
+	</select>
+
+	<select id="getMembernickNameCheck" resultType="com.spring.javawspring.vo.MemberVO">
+		select * from member2 where nickName = #{nickName};
+	</select>
+
+	<select id="totRecCnt" resultType="int">
+		select count(*) from member2;
+	</select>
+	
+	<select id="getMemberList" resultType="com.spring.javawspring.vo.MemberVO">
+		select * from member2 order by idx desc limit #{startIndexNo}, #{pageSize};
+	</select>
+
+	<select id="totSearchCnt" resultType="int">
+		select count(*) from member2 where ${search} like concat('%',#{searchString},'%');
+	</select>
+
+	<select id="getMemberSearch" resultType="com.spring.javawspring.vo.MemberVO">
+		select * from member2 where ${search} like concat('%',#{searchString},'%') order by idx desc limit #{startIndexNo}, #{pageSize};
+	</select>
+	
+	<select id="getMemberMid" resultType="com.spring.javawspring.vo.MemberVO">
+		select * from member2 where name = #{name} and nickName = #{nickName};
+	</select>
+
+	<select id="totTermRecCnt" resultType="int">
+		<!-- 		
+		<if test="search == ''"> 동적에 들어오는것 그냥 필드면 만 적으면됨
+			select count(*) from member2;
+		</if>
+		<if test="search != ''">
+			select count(*) from member2 where ${search} like concat('%',#{searchString},'%');
+		</if> 
+		-->
+		select count(*) from member2 <if test="search != ''"> where ${search} like concat('%',#{searchString},'%')</if>;
+	</select>
+	<select id="getTermMemberList" resultType="com.spring.javawspring.vo.MemberVO">
+		<!-- 
+		<if test="search == ''">
+			select * from member2 order by idx desc limit #{startIndexNo}, #{pageSize};
+		</if>
+		<if test="search != ''">
+			select * from member2 where ${search} like concat('%',#{searchString},'%') order by idx desc limit #{startIndexNo}, #{pageSize};
+		</if> 
+		-->
+			select * from member2 <if test="search != ''"> where ${search} like concat('%',#{searchString},'%') order by idx desc limit #{startIndexNo}, #{pageSize}</if>;
+	</select>
+
+
+	<update id="setMemTotalUpdate">
+		update member2 set lastDate=now(), todayCnt=#{todayCnt}, visitCnt=visitCnt + 1, point=#{nowTodayPoint} where mid = #{mid};
+	</update>
+	
+	<update id="getMemberDelete">
+		update member2 set userDel='OK' where mid = #{mid};
+	</update>
+	
+	<update id="setMemberPwdUpdate">
+		update member2 set pwd=#{pwd} where mid = #{mid};
+	</update>
+	
+	<update id="setMemberUpdate">
+		update member2 set nickName = #{vo.nickName},name=#{vo.name},email=#{vo.email},gender=#{vo.gender},birthday=#{vo.birthday},tel= #{vo.tel}, address=#{vo.address}, email=#{vo.email},homePage=#{vo.homePage},job=#{vo.job},hobby=#{vo.hobby},photo=#{vo.photo},content=#{vo.content},userInfor=#{vo.userInfor}where mid = #{vo.mid};
+	</update>
+	
+	<insert id="setMemberJoinOk">
+		insert into member2 values (default, #{vo.mid}, #{vo.pwd}, #{vo.nickName}, #{vo.name}, #{vo.gender},#{vo.birthday}, #{vo.tel}, #{vo.address}, #{vo.email}, #{vo.homePage}, #{vo.job}, #{vo.hobby}, #{vo.photo}, #{vo.content}, #{vo.userInfor},default, default, default, default, default, default, default);
+	</insert>
+	
+	
+	
+</mapper>
