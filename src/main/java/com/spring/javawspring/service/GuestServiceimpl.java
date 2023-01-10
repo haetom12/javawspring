@@ -53,5 +53,9 @@ public class GuestServiceimpl implements GuestService {
 		guestDAO.guestUpdateOk(vo);
 	}
 
+	@Override
+	public ArrayList<GuestVO> getTermGuestList(int startIndexNo, int pageSize, String search, String searchString) {
+		return guestDAO.getTermGuestList(startIndexNo,pageSize, search, searchString);
+	}
 
 }

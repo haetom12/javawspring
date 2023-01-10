@@ -55,17 +55,20 @@ public class GuestController {
 		return "guest/guestList";
 	}
 		*/
-	// 페이지 네이션 이용하기
+	// 페이지 네이션 이용하기 (리스트 검색 둘다 이쪽으로)
 	@RequestMapping(value = "/guestList", method = RequestMethod.GET)
 	public String guestListGet(Model model,
 			@RequestParam(name = "search" , defaultValue = "", required = false) String search,
 			@RequestParam(name = "searchString" , defaultValue = "", required = false) String searchString,
 			@RequestParam(name="pag", defaultValue = "1", required = false) int pag, 
 			@RequestParam(name="pageSize", defaultValue = "5", required = false) int pageSize) {	
-		
 		PageVO pageVo = pageProcess.totRecCnt(pag, pageSize, "guest",search,searchString);  //3. 총 레코드 건수를 구한다.
+		
+		System.out.println("pageSize :" + pageSize);
+		System.out.println("검색어" + searchString);
+		System.out.println("총 개수"+ pageVo.getTotRecCnt());
 
-		ArrayList<GuestVO> vos = guestService.getGuestList(pageVo.getStartIndexNo(), pageSize);
+		ArrayList<GuestVO> vos = guestService.getTermGuestList(pageVo.getStartIndexNo(), pageVo.getPageSize(),search,searchString);
 		
 		model.addAttribute("vos", vos);
 		model.addAttribute("pageVo", pageVo);
@@ -76,7 +79,7 @@ public class GuestController {
 	}
 	
 	
-	
+	/*
 	@RequestMapping(value = "/guestSearch", method = RequestMethod.POST)
 	public String guestListPost(Model model, String search, String searchString,
 			@RequestParam(name="pag", defaultValue = "1", required = false) int pag) {
@@ -102,7 +105,7 @@ public class GuestController {
 			model.addAttribute("lastBlock", lastBlock);
 		return "guest/guestList";
 	}
-
+*/
 	@RequestMapping(value = "/guestInput", method = RequestMethod.GET)
 	public String guestInputGet() {
 		return "guest/guestInput";

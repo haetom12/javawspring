@@ -24,4 +24,6 @@ public interface GuestDAO {
 
 	public void guestUpdateOk(@Param("vo") GuestVO vo);
 
+	public ArrayList<GuestVO> getTermGuestList(@Param("startIndexNo") int startIndexNo,@Param("pageSize") int pageSize,@Param("search") String search,@Param("searchString") String searchString);
+
 }

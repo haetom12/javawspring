@@ -18,7 +18,7 @@
 	</select>
 
 	<select id="totSearchCnt" resultType="int">
-		select count(*) from member2 where ${search} like concat('%',#{searchString},'%');
+		select count(*) from member2 <if test="search != ''"> where ${search} like concat('%',#{searchString},'%')</if>;
 	</select>
 
 	<select id="getMemberSearch" resultType="com.spring.javawspring.vo.MemberVO">
@@ -49,7 +49,7 @@
 			select * from member2 where ${search} like concat('%',#{searchString},'%') order by idx desc limit #{startIndexNo}, #{pageSize};
 		</if> 
 		-->
-			select * from member2 <if test="search != ''"> where ${search} like concat('%',#{searchString},'%') order by idx desc limit #{startIndexNo}, #{pageSize}</if>;
+			select * from member2 <if test="search != ''"> where ${search} like concat('%',#{searchString},'%') </if> order by idx desc limit #{startIndexNo}, #{pageSize};
 	</select>
 
 

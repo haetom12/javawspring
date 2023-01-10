@@ -16,6 +16,6 @@ insert into guest2 values (default,'관리자','haetom12@gmail.com','haetom@nave
 
 select * from guest2;
 
-
+select count(*) from guest2
 
 --drop table guest;

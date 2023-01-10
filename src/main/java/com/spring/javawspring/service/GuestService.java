@@ -22,5 +22,7 @@ public interface GuestService {
 
 	public void guestUpdateOk(GuestVO vo);
 
+	public ArrayList<GuestVO> getTermGuestList(int startIndexNo, int pageSize, String search, String searchString);
+
 
 }

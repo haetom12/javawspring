@@ -262,7 +262,7 @@
 	    <option value="15" ${pageSize==15 ? 'selected' : ''}>15건</option>
 	    <option value="20" ${pageSize==20 ? 'selected' : ''}>20건</option>
 	  </select>
-	  <form name="mysearchform" method="post" action="${ctp}/guest/guestSearch">
+	  <form name="mysearchform">
 	  	<select name="search" style="width:12%;" style="width:10%; margin-bottom: 5px;">
 	      <option value="name">성 명</option>
 	      <option value="email">이메일</option>

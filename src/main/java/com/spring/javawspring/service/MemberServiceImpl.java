@@ -160,5 +160,4 @@ public class MemberServiceImpl implements MemberService {
 		memberDAO.setMemberPwdUpdate(mid, pwd);
 	}
 
-
 }

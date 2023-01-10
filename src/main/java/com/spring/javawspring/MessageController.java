@@ -127,6 +127,14 @@ public class MessageController {
 			model.addAttribute("msg", "회원수정 실패!!");
 			model.addAttribute("url", "member/memberUpdate");
 		}
+		else if(msgFlag.equals("boardInputOk")) {
+			model.addAttribute("msg", "게시글이 등록되었습니다!");
+			model.addAttribute("url", "board/boardList");
+		}
+		else if(msgFlag.equals("boardInputNo")) {
+			model.addAttribute("msg", "게시글이 등록실패!");
+			model.addAttribute("url", "board/boardList");
+		}
 		
 		return "include/message";
 	}

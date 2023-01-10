@@ -11,11 +11,15 @@
 	</select>
 	
 	<select id="totSearchCnt" resultType="int">
-		select count(*) from guest2 where ${search} like concat('%',#{searchString},'%');
+		select count(*) from guest2 <if test="searchString != ''"> where ${search} like concat('%',#{searchString},'%')</if>;
 	</select>
 	
 	<select id="getGuestSearch" resultType="com.spring.javawspring.vo.GuestVO">
 		select * from guest2 where ${search} like concat('%',#{searchString},'%') order by idx desc limit #{startIndexNo},#{pageSize};
+	</select>
+	
+	<select id="getTermGuestList" resultType="com.spring.javawspring.vo.GuestVO">
+		select * from guest2 <if test="searchString != ''"> where ${search} like concat('%',#{searchString},'%') </if> order by idx desc limit #{startIndexNo},#{pageSize};
 	</select>
 	
 	<select id="guestUpdate" resultType="com.spring.javawspring.vo.GuestVO">

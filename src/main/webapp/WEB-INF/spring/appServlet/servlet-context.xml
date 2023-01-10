@@ -14,11 +14,12 @@
 
 	<!-- Handles HTTP GET requests for /resources/** by efficiently serving up static resources in the ${webappRoot}/resources directory -->
 	<resources mapping="/resources/**" location="/resources/" />
+	<resources mapping="/js/**" location="/resources/js/" />
 	<resources mapping="/images/**" location="/resources/images/" />
-	<resources mapping="/board/**" location="/resources/board/" />
+	<resources mapping="/board/**" location="/resources/data/board/" />
 	<resources mapping="/pds/**" location="/resources/pds/" />
 	<resources mapping="/member/**" location="/resources/member/" />
-	<resources mapping="/js/**" location="/resources/js/" />
+	<resources mapping="/ckeditor/**" location="/resources/ckeditor/" />
 
 	<!-- Resolves views selected for rendering by @Controllers to .jsp resources in the /WEB-INF/views directory -->
 	<beans:bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
@@ -37,38 +38,34 @@
 		<beans:property name="defaultEncoding" value="utf-8"/>
 	</beans:bean>
 	
-	<!--InterCeptor 설정 -->
-	<beans:bean id="adminInterceptor" class="com.spring.javawspring.interceptor.Level0Interceptor"></beans:bean>
-	<beans:bean id="otherInterceptor" class="com.spring.javawspring.interceptor.Level4Interceptor"></beans:bean>
-	<beans:bean id="memberInterceptor" class="com.spring.javawspring.interceptor.Level3Interceptor"></beans:bean>
-	
+	<!-- Interceptor 설정 -->
+	<beans:bean id="level0Interceptor" class="com.spring.javawspring.interceptor.Level0Interceptor" />
+	<beans:bean id="level3Interceptor" class="com.spring.javawspring.interceptor.Level3Interceptor" />
+	<beans:bean id="level4Interceptor" class="com.spring.javawspring.interceptor.Level4Interceptor" />
 	<interceptors>
-	
 		<interceptor>
 			<mapping path="/admin/**"/>
-			<beans:ref bean="adminInterceptor"/>
+			<beans:ref bean="level0Interceptor" />
 		</interceptor>
 		<interceptor>
 			<mapping path="/member/**"/>
+			<mapping path="/board/boardList"/>
 			<exclude-mapping path="/member/memberLogin"/>
 			<exclude-mapping path="/member/memberLogout"/>
 			<exclude-mapping path="/member/memberJoin"/>
 			<exclude-mapping path="/member/memberIdCheck"/>
 			<exclude-mapping path="/member/memberNickNameCheck"/>
-			<exclude-mapping path="/member/memberIdSearch"/>
-			<exclude-mapping path="/member/memberMain"/>
-			<exclude-mapping path="/member/memberDelete"/>
+			<exclude-mapping path="/member/memberList"/>
 			<exclude-mapping path="/member/memberPwdSearch"/>
-			<exclude-mapping path="/member/memUpdatePwd"/>
-			<exclude-mapping path="/member/memberPwdCheck"/>
-			<exclude-mapping path="/member/memberUpdate"/>
-			<beans:ref bean="memberInterceptor"/>
+			<beans:ref bean="level4Interceptor" />
 		</interceptor>
 		<interceptor>
-			<mapping path="/board/boardList"/>
-			<beans:ref bean="otherInterceptor"/>
+			<mapping path="/study/**"/>
+			<mapping path="/board/**"/>
+			<mapping path="/member/memberList"/>
+			<exclude-mapping path="/board/boardList"/>
+			<beans:ref bean="level3Interceptor" />
 		</interceptor>
-		
 	</interceptors>
 	
 </beans:beans>

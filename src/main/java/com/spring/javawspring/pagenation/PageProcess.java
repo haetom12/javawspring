@@ -3,6 +3,7 @@ package com.spring.javawspring.pagenation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.spring.javawspring.dao.BoardDAO;
 import com.spring.javawspring.dao.GuestDAO;
 import com.spring.javawspring.dao.MemberDAO;
 
@@ -13,16 +14,22 @@ public class PageProcess {
 	
 	@Autowired
 	MemberDAO memberDAO;
+	
+	@Autowired
+	BoardDAO boardDAO;
 
 	public PageVO totRecCnt(int pag, int pageSize, String section, String search, String searchString) {
 		PageVO pageVO = new PageVO();
 		int totRecCnt = 0;
 		
 		if(section.equals("member")) {
-		 	totRecCnt = memberDAO.totRecCnt();			
+		 	totRecCnt = memberDAO.totSearchCnt(search,searchString);			
 		}
 		else if(section.equals("guest")) {
-			totRecCnt = guestDAO.totRecCnt();			
+			totRecCnt = guestDAO.totSearchCnt(search,searchString);			
+		}
+		else if(section.equals("board")) {
+			totRecCnt = boardDAO.totSearchCnt(search,searchString);			
 		}
 		
 		int totPage = (totRecCnt % pageSize) ==0 ? totRecCnt / pageSize : (totRecCnt / pageSize) +1;	//4. 총 페이지 건수를 구한다.
@@ -35,7 +42,7 @@ public class PageProcess {
 		
 		pageVO.setPag(pag);
 		pageVO.setPageSize(pageSize);
-		pageVO.setTotPage(totRecCnt);
+		pageVO.setTotRecCnt(totRecCnt);
 		pageVO.setTotPage(totPage);
 		pageVO.setStartIndexNo(startIndexNo);
 		pageVO.setCurScrStartNo(curScrStartNo);
