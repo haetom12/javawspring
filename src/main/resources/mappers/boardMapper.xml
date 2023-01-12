@@ -11,6 +11,14 @@
 		from board2 b <if test="search != ''"> where ${search} like concat('%',#{searchString},'%') </if> order by idx desc limit #{startIndexNo}, #{pageSize};
 	</select>
 	
+	<select id="totboardReplyCnt" resultType="int">
+		select count(*) from boardReply2  where <if test="searchString != ''"> ${search} like concat('%',#{searchString},'%') and</if> boardIdx = #{boardIdx};
+	</select>
+	
+	<select id="getBoardReply2" resultType="com.spring.javawspring.vo.BoardReplyVO">
+		select * from boardReply2 where boardIdx = #{boardIdx} <if test="search != ''"> and ${search} like concat('%',#{searchString},'%')</if> order by idx desc limit #{startIndexNo}, #{pageSize};
+	</select>
+	
 	<select id="getBoardContent" resultType="com.spring.javawspring.vo.BoardVO">
 		select * from board2 where idx = #{idx};
 	</select>

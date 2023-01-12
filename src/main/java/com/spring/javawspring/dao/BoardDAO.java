@@ -55,6 +55,10 @@ public interface BoardDAO {
 
 	public void setAdminBoardDelete(@Param("idx") int idx);
 
+	public int totboardReplyCnt(@Param("search") String search, @Param("searchString") String searchString, @Param("boardIdx")  int idx);
+
+	public List<BoardReplyVO> getBoardReply2(@Param("startIndexNo") int startIndexNo, @Param("pageSize") int pageSize, @Param("search") String search, @Param("searchString") String searchString, @Param("boardIdx") int idx);
+
 
 
 

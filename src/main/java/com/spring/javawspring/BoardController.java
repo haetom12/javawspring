@@ -36,7 +36,7 @@ public class BoardController {
 	@Autowired
 	MemberService memberService;
 	
-	// 어드민 메인
+	// 게시판 리스트
 	@RequestMapping(value = "/boardList", method = RequestMethod.GET)
 	public String boardListGet(Model model,
 			@RequestParam(name = "pag", defaultValue = "1", required = false) int pag,
@@ -85,8 +85,19 @@ public class BoardController {
 	
 	// 글 조회수 1회 증가시키기.(조회수 중복방지처리 - 세션 사용 : 'board+고유번호'를 객체배열에 추가시킨다.)
 	@RequestMapping(value = "/boardContent", method = RequestMethod.GET)
-	public String boardContentPost(Model model, int idx, int pag, int pageSize, HttpServletRequest request) {
+	public String boardContentPost(Model model, int idx, HttpServletRequest request,
+			@RequestParam(name = "pag", defaultValue = "1", required = false) int pag,
+			@RequestParam(name = "pageSize", defaultValue = "1", required = false) int pageSize,
+			@RequestParam(name = "replyPag", defaultValue = "1", required = false) int replyPag,
+			@RequestParam(name = "replyPageSize", defaultValue = "10", required = false) int replyPageSize,
+			@RequestParam(name = "search" , defaultValue = "", required = false) String search,
+			@RequestParam(name = "searchString" , defaultValue = "", required = false) String searchString) {
 		BoardVO vo = boardService.getBoardContent(idx); // 성공하면 1넘어옴
+		
+		System.out.println("replyPag" + replyPag);
+		System.out.println("replyPageSize" + replyPageSize);
+		System.out.println("pag" + pag);
+		System.out.println("idx" + idx);
 		
 		// 글 조회수 1회 증가시키기
 		HttpSession session = request.getSession();
@@ -133,10 +144,17 @@ public class BoardController {
 		
 		model.addAttribute("pnVos",pnVos);
 		
-		// 댓글 가져오기(replyVos)
-		List<BoardReplyVO> replyVos = boardService.getBoardReply(idx);
+		// 댓글 페이지 처리
+		PageVO pageVo = pageProcess.totReplyRecCnt(replyPag, replyPageSize, "boardReply", search, searchString, idx);
 		
+		// 댓글 가져오기(replyVos)
+		List<BoardReplyVO> replyVos = boardService.getBoardReply2(pageVo.getStartIndexNo(), replyPageSize ,search,searchString,idx);
+		
+		model.addAttribute("pageVo",pageVo);
+		model.addAttribute("idx", idx);
 		model.addAttribute("replyVos",replyVos);
+		model.addAttribute("replyPag",replyPag);
+		model.addAttribute("replyPageSize",replyPageSize);
 		return "board/boardContent";
 	}
 	

@@ -33,7 +33,6 @@ public class BoardServiceImpl implements BoardService {
 
 	@Override
 	public int setBoardInput(BoardVO vo) {
-		// TODO Auto-generated method stub
 		return boardDAO.setBoardInput(vo);
 	}
 
@@ -253,5 +252,10 @@ public class BoardServiceImpl implements BoardService {
 	@Override
 	public int getMemberCount() {
 		return boardDAO.getMemberCount();
+	}
+
+	@Override
+	public List<BoardReplyVO> getBoardReply2(int startIndexNo, int pageSize, String search, String searchString, int idx) {
+		return boardDAO.getBoardReply2(startIndexNo, pageSize, search, searchString, idx);
 	}
 }

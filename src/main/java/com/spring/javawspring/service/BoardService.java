@@ -54,6 +54,8 @@ public interface BoardService {
 	public int getBoardNewCount();
 
 	public int getMemberCount();
+
+	public List<BoardReplyVO> getBoardReply2(int startIndexNo, int pageSize, String search, String searchString, int idx);
 	
 
 }

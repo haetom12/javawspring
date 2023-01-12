@@ -61,7 +61,9 @@ public class AdminController {
 		int newBoardCnt = boardService.getBoardNewCount();
 		int newMemberCnt = boardService.getMemberCount();
 		
+		// 최신 게시판(24시간내)
 		model.addAttribute("newBoardCnt",newBoardCnt);
+		// 신규회원(24시간내)
 		model.addAttribute("newMemberCnt",newMemberCnt);
 		return "admin/adminContent";
 	}
