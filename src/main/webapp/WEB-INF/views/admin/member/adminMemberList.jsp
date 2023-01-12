@@ -84,9 +84,9 @@
   	<div class="row mb-2">
   	  <div class="col form-inline">
   	    <select name="search" style="width:20%;" class="form-control">
-          <option value="mid">아이디</option>
-          <option value="nickName">별명</option>
-          <option value="name">성명</option>
+          <option value="mid" ${search=='mid' ? 'selected' : ''}>아이디</option>
+          <option value="nickName" ${search=='nickName' ? 'selected' : ''}>별명</option>
+          <option value="name" ${search=='name' ? 'selected' : ''}>성명</option>
         </select>
   	    <input type="text" name="searchString" class="form-control" autofocus />&nbsp;
   	    <input type="button" value="아이디개별검색" onclick="midSearch();" class="btn btn-secondary" />

@@ -6,4 +6,6 @@ public interface AdminService {
 
 	public int setMemberDelete(int idx);
 
+	public int setAdminBoardDelete(String delItems);
+
 }

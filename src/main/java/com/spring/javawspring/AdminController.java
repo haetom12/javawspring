@@ -1,6 +1,10 @@
 package com.spring.javawspring;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -14,7 +18,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.spring.javawspring.pagenation.PageProcess;
 import com.spring.javawspring.pagenation.PageVO;
 import com.spring.javawspring.service.AdminService;
+import com.spring.javawspring.service.BoardService;
 import com.spring.javawspring.service.MemberService;
+import com.spring.javawspring.vo.BoardVO;
 import com.spring.javawspring.vo.MemberVO;
 
 @Controller
@@ -33,10 +39,12 @@ public class AdminController {
 	@Autowired
 	MemberService memberService;
 	
+	@Autowired
+	BoardService boardService;
+	
 	// 어드민 메인
 	@RequestMapping(value = "/adminMain", method = RequestMethod.GET)
-	public String adminMainGet() {
-		
+	public String adminMainGet(Model model) {
 		return "admin/adminMain";
 	}
 	
@@ -49,8 +57,12 @@ public class AdminController {
 	
 	// 어드민 메인
 	@RequestMapping(value = "/adminContent", method = RequestMethod.GET)
-	public String adminContentGet() {
+	public String adminContentGet(Model model) {
+		int newBoardCnt = boardService.getBoardNewCount();
+		int newMemberCnt = boardService.getMemberCount();
 		
+		model.addAttribute("newBoardCnt",newBoardCnt);
+		model.addAttribute("newMemberCnt",newMemberCnt);
 		return "admin/adminContent";
 	}
 	
@@ -86,6 +98,69 @@ public class AdminController {
 	@RequestMapping(value = "member/adminMemberDel", method = RequestMethod.POST)
 	public String adminMemberDelPost(int idx) {
 		int res = adminService.setMemberDelete(idx);
+		
+		return res+"";
+	}
+	
+//어드민 메인
+	@RequestMapping(value = "/adminboardList", method = RequestMethod.GET)
+	public String boardListGet(Model model,
+			@RequestParam(name = "pag", defaultValue = "1", required = false) int pag,
+			@RequestParam(name = "pagSize", defaultValue = "5", required = false) int pageSize,
+			@RequestParam(name = "search" , defaultValue = "", required = false) String search,
+			@RequestParam(name = "searchString" , defaultValue = "", required = false) String searchString) {
+		
+		PageVO pageVo = pageProcess.totRecCnt(pag, pageSize, "board", search, searchString);
+		
+		List<BoardVO> vos = boardService.getBoardList(pageVo.getStartIndexNo(), pageSize,search,searchString);
+		
+		model.addAttribute("vos",vos);
+		model.addAttribute("pageVo",pageVo);
+		
+		return "admin/board/adminBoardList";
+	}
+	
+	
+
+	// ckeditor 폴거의 파일 리스트 보여주기
+	@RequestMapping(value = "/file/fileList", method = RequestMethod.GET)
+	public String fileListGet(HttpServletRequest request, Model model) {
+		String realPath = request.getRealPath("/resources/data/ckeditor/");
+		
+		String[] files = new File(realPath).list(); // 해당폴더에 들어가있는 파일의 리스트들을 담아준다
+		
+		model.addAttribute("files", files);
+		
+		return "admin/file/fileList";
+	}
+	// ckeditor 폴거의 파일 리스트 보여주기
+	
+	
+	// 껍데기 사진 삭제하기
+	@ResponseBody
+	@RequestMapping(value = "/photoViewDeleteAll", method = RequestMethod.POST)
+	public String photoViewDeleteAllPost(HttpServletRequest request, Model model, String delItems) {
+		String realPath = request.getRealPath("/resources/data/ckeditor/");
+		int res = 0;
+		String[] delfile = delItems.split("/");
+		
+		for(int i=0; i<delfile.length; i++) {
+//			System.out.println("파일 이름 :" + delfile[i]);
+			String origFilePath = realPath + delfile[i];
+			File deleteFile = new File(origFilePath);
+			
+			if(deleteFile.exists()) deleteFile.delete();
+			res = 1;
+		}
+		return res+"";
+	}
+	// 선택한 게시글 삭제하기
+	@ResponseBody
+	@RequestMapping(value = "/boardDeleteAll", method = RequestMethod.POST)
+	public String boardDeleteAllPost(HttpServletRequest request, Model model, String delItems) {
+		int res = 0;
+		
+		res = adminService.setAdminBoardDelete(delItems);
 		
 		return res+"";
 	}

@@ -72,7 +72,7 @@
     	  <td>${vo.nickName}</td>
     	  <td>
     	    <!-- 1일(24시간)이 지난것은 날짜만표시, 1일(24시간)이내것은 시간을 표시하되, 24시간 이내중 현재시간보다 이후시간은 날짜와 시간을 함께 표시 -->
-    	    <c:if test="${vo.hour_diff > 24}">${fn:substring(vo.WDate,0,10)}</c:if>
+    	    <c:if test="${vo.hour_diff >= 24}">${fn:substring(vo.WDate,0,10)}</c:if>
     	    <c:if test="${vo.hour_diff < 24}">
     	      ${vo.day_diff > 0 ? fn:substring(vo.WDate,0,16) : fn:substring(vo.WDate,11,19)}
     	    </c:if>

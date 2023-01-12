@@ -51,30 +51,27 @@ public class HomeController {
 		String oFileName = upload.getOriginalFilename();
 		
 		Date date = new Date();
-	  SimpleDateFormat sdf = new SimpleDateFormat("yyMMddHHmmss");
+	  SimpleDateFormat sdf = new SimpleDateFormat("yyMMddHHmmss"); // 날짜변환
 	  oFileName = sdf.format(date) + "_" + oFileName;
 		
 	  byte[] bytes = upload.getBytes(); 
 	  
+	  
 	  // ckeditor에서 올린 파일을, 서버 파일시스템에 실제로 저장할 경로를 결정한다.
 //	  String realPath = request.getRealPath("");
-	  String realPath = request.getSession().getServletContext().getRealPath("/resources/data/board/");
-	  OutputStream os = new FileOutputStream(new File(realPath + oFileName));
-	  
+	  String realPath = request.getSession().getServletContext().getRealPath("/resources/data/ckeditor/");
+	  OutputStream os = new FileOutputStream(new File(realPath + oFileName)); // 2줄을 한줄로
+	  // 서버에 읽을떄 inputstream , 서버에서 서버로 저장할땐 outputstream
 	  os.write(bytes);
+	  
 	  
 	  // 서버 파일시스템에 저장되어 있는 파일을 브라우저 편집 화면에 보여주기 위한 작업
 	  PrintWriter out = response.getWriter();
-	  String fileUrl = request.getContextPath() + "/board/" + oFileName;
+	  String fileUrl = request.getContextPath() + "/data/ckeditor/" + oFileName;
 	  out.println("{\"originalFilename\" : \""+oFileName+"\", \"uploaded\" : 1, \"url\" : \""+fileUrl+"\"}");
 	  
 	  out.flush(); //보내고 남은 바이트들도 다 보내기
 	  os.close();
 	}
-	
 }
-
-
-
-
 
