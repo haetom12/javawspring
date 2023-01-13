@@ -427,7 +427,6 @@
 	  </table>
 	  <%-- 
 	  <input type="hidden" name="replyPageSize" value="${replyPageSize}"/>
-	  <input type="hidden" name="replyPageSize" value="${replyPageSize}"/>
 	  <input type="hidden" name="mid" value="${sMid}"/>
 	  <input type="hidden" name="nickName" value="${sNickName}"/>
 	   --%>
