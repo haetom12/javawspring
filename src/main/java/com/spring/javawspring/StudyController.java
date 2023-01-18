@@ -9,6 +9,7 @@ import java.util.UUID;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -29,6 +31,7 @@ import com.spring.javawspring.service.StudyService;
 import com.spring.javawspring.vo.GuestVO;
 import com.spring.javawspring.vo.MailVO;
 import com.spring.javawspring.vo.MemberVO;
+import com.spring.javawspring.vo.qrCodeVO;
 
 @Controller
 @RequestMapping("/study")
@@ -307,6 +310,65 @@ public class StudyController {
 		return "study/calendar/calendar";
 	}
 	
+	// qrCode 폼
+	@RequestMapping(value = "/qrCode", method = RequestMethod.GET)
+	public String qrCodeGet(HttpSession session, Model model) {
+		String mid = (String) session.getAttribute("sMid");
+		MemberVO vo = memeService.getMemberIdCheck(mid);
+		
+		model.addAttribute("vo", vo);
+		
+		return "study/qrCode/qrCode";
+	}
+	
+	// qrCode 생성
+	@ResponseBody
+	@RequestMapping(value = "/qrCode", method = RequestMethod.POST)
+	public String qrCodePost(HttpServletRequest request, 
+			@RequestParam(name = "mid", defaultValue = "", required = false) String mid,
+			@RequestParam(name = "moveFlag", defaultValue = "", required = false) String moveFlag) {
+		String realPath = request.getSession().getServletContext().getRealPath("/resources/data/qrCode/");
+		
+		String qrCodeName = studyService.qrCreate(mid,moveFlag, realPath);
+		
+		return qrCodeName;
+	}
+	
+	// qrCode 폼
+	@RequestMapping(value = "/qrCode2", method = RequestMethod.GET)
+	public String qrCode2Get() {
+		return "study/qrCode/qrCode2";
+	}
+	// 음식 qrCode  생성
+	@ResponseBody
+	@RequestMapping(value = "/qrCode2", method = RequestMethod.POST, produces="application/text; charset=utf-8")
+	public String qrCode2Post(HttpServletRequest request, 
+			@RequestParam(name = "name", defaultValue = "", required = false) String name, 
+			@RequestParam(name = "price", defaultValue = "0", required = false) int price, 
+			@RequestParam(name = "ingredient", defaultValue = "", required = false) String ingredient) {
+		
+		String realPath = request.getSession().getServletContext().getRealPath("/resources/data/qrCode/");
+
+		String qrCodeName = studyService.qrCreate2(name,price,ingredient, realPath);
+		
+		String uid = qrCodeName.substring(qrCodeName.lastIndexOf("_")+1);
+		
+		System.out.println("uid" + uid);
+		
+		studyService.setFoodInfo(name,price,ingredient,uid,qrCodeName);
+		
+		
+		return qrCodeName;
+	}
+	// qrCode 폼
+	@RequestMapping(value = "/foodSearch", method = RequestMethod.POST)
+	public String foodSearchPost(String foodStr, Model model) {
+		qrCodeVO vo = studyService.getQrCodeInfo(foodStr);
+		
+		model.addAttribute("vo",vo);
+		return "study/qrCode/qrCode2";
+	}
+
 	
 }
 

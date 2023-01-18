@@ -1,11 +1,16 @@
 package com.spring.javawspring.service;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.UUID;
 
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,9 +19,16 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.WriterException;
+import com.google.zxing.client.j2se.MatrixToImageConfig;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
 import com.spring.javawspring.dao.StudyDAO;
 import com.spring.javawspring.vo.GuestVO;
 import com.spring.javawspring.vo.MemberVO;
+import com.spring.javawspring.vo.qrCodeVO;
 
 @Service
 public class StudyServiceImpl implements StudyService {
@@ -255,4 +267,99 @@ public class StudyServiceImpl implements StudyService {
 		
 		
 	}
+
+	@Override
+	public String qrCreate(String mid, String moveFlag, String realPath) {
+		String qrCodeName = "";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddhhmmss"); 
+		UUID uid = UUID.randomUUID(); // 기본 32글자
+		String strUid = uid.toString().substring(0,2);
+		
+		qrCodeName = sdf.format(new Date()) + "_" + mid + "_" + moveFlag + "_"  + strUid;
+		
+		try {
+			File file = new File(realPath);
+			if(!file.exists()) file.mkdirs(); // 경로에 폴더가 없으면 만들라는 자바명령어
+			
+			String codeFlag  = new String(moveFlag.getBytes("UTF-8"), "ISO-8859-1");
+			
+			//qr코드 만들기
+			int qrCodeColor = 0xFF000000; 		// qr 코드 전경색(글자색)
+			int qrCodeBackColor = 0xFFFFFFFF; // qr코드 배경색
+			
+			// qe코드 객체 생성
+		  QRCodeWriter qrCodeWriter = new QRCodeWriter(); // qr코드 객체 생성
+		  //BitMatrix bitMatrix = qrCodeWriter.encode(codeFlag, BarcodeFormat.QR_CODE, qrCodeColor, qrCodeBackColor);
+		  BitMatrix bitMatrix = qrCodeWriter.encode(codeFlag,BarcodeFormat.QR_CODE, 200 , 200);
+		  
+		  // .을 찍어주는것 (색상 설정)
+		  MatrixToImageConfig matrixToImageConfig = new MatrixToImageConfig(qrCodeColor,qrCodeBackColor);
+		  
+		  // 설정들 가지고 qr생성
+		  BufferedImage bufferedImage = MatrixToImageWriter.toBufferedImage(bitMatrix,matrixToImageConfig);
+		  
+		  ImageIO.write(bufferedImage, "png", new File(realPath + qrCodeName + ".png"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (WriterException e) {
+			e.printStackTrace();
+		}
+		
+		return qrCodeName;
+	}
+
+	@Override
+	public void setFoodInfo(String name, int price, String ingredient , String uid, String qrCodeName) {
+		studyDAO.setFoodInfo(name, price,ingredient, uid, qrCodeName);
+	}
+
+	// 음식 qr 코드 만들기
+	@Override
+	public String qrCreate2(String name, int price, String ingredient, String realPath) {
+		String qrCodeName = "";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddhhmmss"); 
+		UUID uid = UUID.randomUUID(); // 기본 32글자
+		String strUid = uid.toString().substring(0,8);
+		
+		qrCodeName = sdf.format(new Date()) + "_" + name + "_" + price + "_"  + strUid;
+		
+		try {
+			File file = new File(realPath);
+			if(!file.exists()) file.mkdirs(); // 경로에 폴더가 없으면 만들라는 자바명령어
+			
+			String codeFlag  = new String(strUid.getBytes("UTF-8"), "ISO-8859-1");
+			
+			//qr코드 만들기
+			int qrCodeColor = 0xFF000000; 		// qr 코드 전경색(글자색)
+			int qrCodeBackColor = 0xFFFFFFFF; // qr코드 배경색
+			
+			// qe코드 객체 생성
+		  QRCodeWriter qrCodeWriter = new QRCodeWriter(); // qr코드 객체 생성
+		  //BitMatrix bitMatrix = qrCodeWriter.encode(codeFlag, BarcodeFormat.QR_CODE, qrCodeColor, qrCodeBackColor);
+		  BitMatrix bitMatrix = qrCodeWriter.encode(codeFlag,BarcodeFormat.QR_CODE, 200 , 200);
+		  
+		  // .을 찍어주는것 (색상 설정)
+		  MatrixToImageConfig matrixToImageConfig = new MatrixToImageConfig(qrCodeColor,qrCodeBackColor);
+		  
+		  // 설정들 가지고 qr생성
+		  BufferedImage bufferedImage = MatrixToImageWriter.toBufferedImage(bitMatrix,matrixToImageConfig);
+		  
+		  ImageIO.write(bufferedImage, "png", new File(realPath + qrCodeName + ".png"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (WriterException e) {
+			e.printStackTrace();
+		}
+		
+		return qrCodeName;
+	}
+
+	@Override
+	public qrCodeVO getQrCodeInfo(String fIdx) {
+		return studyDAO.getQrCodeInfo(fIdx);
+	}
 }
+
+
+
+

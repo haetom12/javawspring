@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import com.spring.javawspring.dao.BoardDAO;
 import com.spring.javawspring.dao.GuestDAO;
 import com.spring.javawspring.dao.MemberDAO;
+import com.spring.javawspring.dao.PdsDAO;
 
 @Service
 public class PageProcess {
@@ -17,7 +18,10 @@ public class PageProcess {
 	
 	@Autowired
 	BoardDAO boardDAO;
-
+	
+	@Autowired
+	PdsDAO pdsDAO;
+	
 	public PageVO totRecCnt(int pag, int pageSize, String section, String search, String searchString) {
 		PageVO pageVO = new PageVO();
 		int totRecCnt = 0;
@@ -30,6 +34,9 @@ public class PageProcess {
 		}
 		else if(section.equals("board")) {
 			totRecCnt = boardDAO.totSearchCnt(search,searchString);			
+		}
+		else if(section.equals("pds")) {
+			totRecCnt = pdsDAO.totRecCnt(search);
 		}
 
 		int totPage = (totRecCnt % pageSize) ==0 ? totRecCnt / pageSize : (totRecCnt / pageSize) +1;	//4. 총 페이지 건수를 구한다.
@@ -49,6 +56,8 @@ public class PageProcess {
 		pageVO.setBlockSize(blockSize);
 		pageVO.setCurBlock(curBlock);
 		pageVO.setLastBlock(lastBlock);
+		
+		pageVO.setPart(search);
 		
 		
 		return pageVO;
@@ -81,5 +90,9 @@ public class PageProcess {
 		pageVO.setLastBlock(lastBlock);
 		return pageVO;
 	}
+	
+	
+	
+	
 	
 }

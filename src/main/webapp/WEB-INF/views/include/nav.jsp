@@ -26,7 +26,8 @@
     <div class="w3-dropdown-hover w3-hide-small">
       <button class="w3-padding-large w3-button" title="More">Study2<i class="fa fa-caret-down"></i></button>     
       <div class="w3-dropdown-content w3-bar-block w3-card-4">
-        <a href="#" class="w3-bar-item w3-button">쿠폰(QR코드)</a>
+        <a href="${ctp}/study/qrCode" class="w3-bar-item w3-button">쿠폰(QR코드)</a>
+        <a href="${ctp}/study/qrCode2" class="w3-bar-item w3-button">(QR코드)연습</a>
         <a href="#" class="w3-bar-item w3-button">카카오맵</a>
         <a href="#" class="w3-bar-item w3-button">구글차트</a>
         <a href="#" class="w3-bar-item w3-button">트랜잭션</a>
@@ -52,7 +53,8 @@
     	<a href="${ctp}/member/memberLogin" class="w3-padding-large w3-button">LOGIN</a>
     	<a href="${ctp}/member/memberJoin" class="w3-padding-large w3-button">Join</a>
     </c:if>
-    <c:if test="${!empty sLevel}"><a href="${ctp}/member/memberLogout" class="w3-padding-large w3-button">Logout</a></c:if>
+    <c:if test="${!empty sLevel && empty KakaoLevel}"><a href="${ctp}/member/memberLogout" class="w3-padding-large w3-button">Logout</a></c:if>
+    <c:if test="${!empty KakaoLevel}"><a href="${ctp}/member/memberKakaoLogout" class="w3-padding-large w3-button">Kakao Logout</a></c:if>
     <a href="javascript:void(0)" class="w3-padding-large w3-hover-red w3-hide-small w3-right"><i class="fa fa-search"></i></a>
   </div>
 </div>

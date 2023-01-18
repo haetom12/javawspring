@@ -14,4 +14,12 @@
 		select email from member2;
 	</select>
 	
+	<select id="getQrCodeInfo" resultType="com.spring.javawspring.vo.qrCodeVO">
+		select * from qrCode where idx =#{idx};
+	</select>
+	
+	<insert id="setFoodInfo">
+		insert into qrCode values(#{idx}, #{qrCode},#{name}, #{price}, #{ingredient} );
+	</insert>
+	
 </mapper>

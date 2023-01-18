@@ -6,6 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.spring.javawspring.vo.GuestVO;
 import com.spring.javawspring.vo.MemberVO;
+import com.spring.javawspring.vo.qrCodeVO;
 
 public interface StudyService {
 
@@ -22,5 +23,13 @@ public interface StudyService {
 	public int fileUpload(MultipartFile fName);
 
 	public void getCalendar();
+
+	public String qrCreate(String mid, String moveFlag, String realPath);
+
+	public void setFoodInfo(String name, int price, String ingredient , String uid, String qrCodeName);
+
+	public String qrCreate2(String name, int price, String ingredient, String realPath);
+
+	public qrCodeVO getQrCodeInfo(String fIdx);
 
 }

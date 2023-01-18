@@ -8,7 +8,40 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>memLogin.jsp</title>
   <jsp:include page="/WEB-INF/views/include/bs4.jsp"></jsp:include>
+  <script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
   <script>
+	window.Kakao.init("ac23d1dc8d935cead13bb8f2c930e90f");
+	  
+		// 카카오 로그인
+  	function kakaoLogin() {
+  		window.Kakao.Auth.login({
+  			scope: 'profile_nickname, account_email',
+  			success:function(autoObj) {
+  				console.log(Kakao.Auth.getAccessToken(), "로그인 OK");
+  				console.log(autoObj);
+  				window.Kakao.API.request({
+  					url : '/v2/user/me',
+  					success:function(res) {
+  						const kakao_account = res.kakao_account;
+  						console.log(kakao_account);
+  						//alert(kakao_account.email + " / " + kakao_account.profile.nickname);
+  						location.href="${ctp}/member/memberKakaoLogin?email="+kakao_account.email+"&nickName="+kakao_account.profile.nickname;
+  					}
+  				});
+  			}
+  		});
+  	}
+  	
+  	// 카카오 로그아웃
+  	function kakaoLogout(kakaoKey) {
+			Kakao.API.request({
+		      url: '/v1/user/unlink',
+		    })
+  		Kakao.Auth.logout(function() {
+  			console.log(Kakao.Auth.getAccessToken(), "토큰 정보가 없습니다.(로그아웃되셨습니다.)");
+  		});
+  	}	
+  	
   	
   </script>
 </head>
@@ -39,6 +72,10 @@
 				    <button type="reset" class="btn btn-primary">다시입력</button>
 				    <button type="button" onclick="location.href='${ctp}/';" class="btn btn-primary">돌아가기</button>
 				    <button type="button" onclick="location.href='${ctp}/member/memberJoin';" class="btn btn-primary">회원가입</button>
+			    </div>
+			    <div class="mb-2">
+			    	<a href="javascript:kakaoLogin();"><img src="${ctp}/images/kakao_login_medium_narrow.png" /></a>
+			    	<a href="javascript:kakaoLogout();" class="btn btn-danger">로그아웃</a>
 			    </div>
 			    <div class="row" style="font-size:12px">
 			      <span class="col"><input type="checkbox" name="idCheck" checked /> 아이디 저장</span>
