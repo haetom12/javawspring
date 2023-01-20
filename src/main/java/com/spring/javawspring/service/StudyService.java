@@ -1,11 +1,14 @@
 package com.spring.javawspring.service;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
 
 import com.spring.javawspring.vo.GuestVO;
+import com.spring.javawspring.vo.KakaoAddressVO;
 import com.spring.javawspring.vo.MemberVO;
+import com.spring.javawspring.vo.TransactionVO;
 import com.spring.javawspring.vo.qrCodeVO;
 
 public interface StudyService {
@@ -31,5 +34,23 @@ public interface StudyService {
 	public String qrCreate2(String name, int price, String ingredient, String realPath);
 
 	public qrCodeVO getQrCodeInfo(String fIdx);
+
+	public KakaoAddressVO getKakaoAddressName(String address);
+
+	public void setKakaoAddressName(KakaoAddressVO vo);
+
+	public List<KakaoAddressVO> getAddressNameList();
+
+	public void setkakaoEx2Delete(String address);
+
+	public List<KakaoAddressVO> getDistanceList();
+
+	public void setTransInput1(TransactionVO vo);
+
+	public void setTransInput2(TransactionVO vo);
+
+	public List<TransactionVO> setTransList();
+
+	public void setTransInput(TransactionVO vo);
 
 }

@@ -148,6 +148,19 @@ public class MessageController {
 			model.addAttribute("msg", "자료실에 파일이 등록되었습니다!!");
 			model.addAttribute("url", "pds/pdsList");
 		}
+		else if(msgFlag.equals("wmMemberIdNo")) {
+			model.addAttribute("msg", "가입된 회원이 아닙니다!!");
+			model.addAttribute("url", "webMessage/webMessage?mSw=0");
+		}
+		else if(msgFlag.equals("wmInputOk")) {
+			model.addAttribute("msg", "메세지 전송 완료!!");
+			model.addAttribute("url", "webMessage/webMessage?mSw=1");
+		}
+		else if(msgFlag.equals("wmDeleteAll")) {
+			model.addAttribute("msg", "휴지통 비우기 성공!");
+			model.addAttribute("url", "webMessage/webMessage?mSw=1");
+		}
+
 		
 		return "include/message";
 	}

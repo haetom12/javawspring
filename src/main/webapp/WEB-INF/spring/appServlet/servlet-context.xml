@@ -3,9 +3,11 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:beans="http://www.springframework.org/schema/beans"
 	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
 	xsi:schemaLocation="http://www.springframework.org/schema/mvc https://www.springframework.org/schema/mvc/spring-mvc.xsd
 		http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
-		http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
+		http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
 
 	<!-- DispatcherServlet Context: defines this servlet's request-processing infrastructure -->
 	
@@ -28,6 +30,7 @@
 		<beans:property name="suffix" value=".jsp" />
 	</beans:bean>
 	
+	<!-- 컨트롤러 경로 -->
 	<context:component-scan base-package="com.spring.javawspring" />
 	
 	<!-- BCryptPasswordEncorder 객체를 위한 Bean 등록 -->
@@ -53,6 +56,7 @@
 			<mapping path="/pds/**"/>
 			<exclude-mapping path="/pds/pdsList"/>
 			<exclude-mapping path="/pds/pdsTotalDown"/>
+			<exclude-mapping path="/pds/pdsDownAction"/>
 			<beans:ref bean="level2Interceptor" />
 		</interceptor>
 				<interceptor>
@@ -61,11 +65,13 @@
 			<mapping path="/member/memberList"/>
 			<mapping path="/pds/pdsList"/>
 			<mapping path="/pds/pdsTotalDown"/>
+			<mapping path="/pds/pdsDownAction"/>
 			<exclude-mapping path="/board/boardList"/>
 			<beans:ref bean="level3Interceptor" />
 		</interceptor>
 		<interceptor>
 			<mapping path="/member/**"/>
+			<mapping path="/webMessage/**"/>
 			<mapping path="/board/boardList"/>
 			<exclude-mapping path="/member/memberLogin"/>
 			<exclude-mapping path="/member/memberLogout"/>
@@ -78,5 +84,8 @@
 			<beans:ref bean="level4Interceptor" />
 		</interceptor>
 	</interceptors>
+	
+	<!-- 트랜잭션을 어노테이션으로 처리하기위해 참조하는 클래스를 등록한다 -->
+	<tx:annotation-driven transaction-manager="transactionManager"/>
 	
 </beans:beans>

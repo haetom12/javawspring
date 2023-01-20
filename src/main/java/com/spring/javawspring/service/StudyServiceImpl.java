@@ -8,6 +8,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import javax.imageio.ImageIO;
@@ -15,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,9 +27,12 @@ import com.google.zxing.client.j2se.MatrixToImageConfig;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
+import com.spring.javawspring.common.DistanceCal;
 import com.spring.javawspring.dao.StudyDAO;
 import com.spring.javawspring.vo.GuestVO;
+import com.spring.javawspring.vo.KakaoAddressVO;
 import com.spring.javawspring.vo.MemberVO;
+import com.spring.javawspring.vo.TransactionVO;
 import com.spring.javawspring.vo.qrCodeVO;
 
 @Service
@@ -357,6 +362,67 @@ public class StudyServiceImpl implements StudyService {
 	@Override
 	public qrCodeVO getQrCodeInfo(String fIdx) {
 		return studyDAO.getQrCodeInfo(fIdx);
+	}
+
+	@Override
+	public KakaoAddressVO getKakaoAddressName(String address) {
+		return studyDAO.getKakaoAddressName(address);
+	}
+
+	@Override
+	public void setKakaoAddressName(KakaoAddressVO vo) {
+		studyDAO.setKakaoAddressName(vo);
+	}
+
+	@Override
+	public List<KakaoAddressVO> getAddressNameList() {
+		return studyDAO.getAddressNameList();
+	}
+
+	@Override
+	public void setkakaoEx2Delete(String address) {
+		studyDAO.setkakaoEx2Delete(address);
+	}
+
+	@Override
+	public List<KakaoAddressVO> getDistanceList() {
+		
+		// 자기 위치를 변수로 담아서 밑에 변수로 받기
+		double centerLat = 36.519487777536845;
+		double centerLongi = 127.25814811650591;
+		
+		List<KakaoAddressVO> dbVos = studyDAO.getKakaoList();
+		
+		List<KakaoAddressVO> vos = new ArrayList<KakaoAddressVO>(); // 거리계산한것을 넣어주는 vos
+		
+		for(int i=0; i<dbVos.size(); i++) {
+			double distance = DistanceCal.distance(centerLat, centerLongi, dbVos.get(i).getLatitude(), dbVos.get(i).getLongitude(), "kilometer");
+			if(distance < 10) {
+				vos.add(dbVos.get(i));
+			}
+		}
+		return vos;
+	}
+
+	@Override
+	public void setTransInput1(TransactionVO vo) {
+		studyDAO.setTransInput1(vo);
+	}
+
+	@Override
+	public void setTransInput2(TransactionVO vo) {
+		studyDAO.setTransInput2(vo);
+	}
+
+	@Override
+	public List<TransactionVO> setTransList() {
+		return studyDAO.setTransList();
+	}
+
+	@Transactional
+	@Override
+	public void setTransInput(TransactionVO vo) {
+		studyDAO.setTransInput(vo);
 	}
 }
 

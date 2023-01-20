@@ -44,6 +44,7 @@ public class MemberController {
 	@Autowired
 	JavaMailSender mailSender;
 
+	
 	@RequestMapping(value = "/memberLogin", method = RequestMethod.GET)
 	public String memberLoginGet(HttpServletRequest request) {
 		Cookie[] cookies = request.getCookies();
@@ -177,7 +178,6 @@ public class MemberController {
 		return "member/memberMain";
 	}
 
-	
 	// 회원가입폼
 	@RequestMapping(value = "/memberJoin", method = RequestMethod.GET)
 	public String memberJoinGet() {

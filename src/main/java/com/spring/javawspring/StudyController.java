@@ -4,6 +4,7 @@ import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 import javax.mail.MessagingException;
@@ -17,6 +18,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -29,8 +31,10 @@ import com.spring.javawspring.common.SecurityUtil;
 import com.spring.javawspring.service.MemberService;
 import com.spring.javawspring.service.StudyService;
 import com.spring.javawspring.vo.GuestVO;
+import com.spring.javawspring.vo.KakaoAddressVO;
 import com.spring.javawspring.vo.MailVO;
 import com.spring.javawspring.vo.MemberVO;
+import com.spring.javawspring.vo.TransactionVO;
 import com.spring.javawspring.vo.qrCodeVO;
 
 @Controller
@@ -369,6 +373,128 @@ public class StudyController {
 		return "study/qrCode/qrCode2";
 	}
 
+	// 카카오 맵 기본 지도보기
+	@RequestMapping(value = "/kakaomap", method = RequestMethod.GET)
+	public String kakaomapGet() {
+		
+		return "study/kakaomap/kakaomap";
+	}
+	
+	// 카카오 맵 '마커표시/DB저장'
+	@RequestMapping(value = "/kakaoEx1", method = RequestMethod.GET)
+	public String kakaoEx1Get() {
+		
+		return "study/kakaomap/kakaoEx1";
+	}
+	
+	// 카카오 맵 '마커표시/DB저장'
+	@ResponseBody
+	@RequestMapping(value = "/kakaoEx1", method = RequestMethod.POST)
+	public String kakaoEx1Post(KakaoAddressVO vo) {
+		KakaoAddressVO searchVo = studyService.getKakaoAddressName(vo.getAddress());
+		
+		if(searchVo != null) return "0";
+		studyService.setKakaoAddressName(vo);
+		
+		return "1";
+	}
+
+	// 카카오 맵 'DB저장된 지역의 검색/삭제'
+	@RequestMapping(value = "/kakaoEx2", method = RequestMethod.GET)
+	public String kakaoEx2Get(Model model,
+			@RequestParam(name = "address", defaultValue = "그린컴퓨터", required = false) String address) {
+		
+		KakaoAddressVO vo = studyService.getKakaoAddressName(address);
+		List<KakaoAddressVO> vos = studyService.getAddressNameList();
+		
+		model.addAttribute("vo",vo);
+		model.addAttribute("vos",vos);
+		model.addAttribute("address",vo.getAddress());
+		
+		return "study/kakaomap/kakaoEx2";
+	}
+	
+	// 카카오 맵 'DB저장된 자료 삭제'
+	@ResponseBody
+	@RequestMapping(value = "/kakaoEx2Delete", method = RequestMethod.POST)
+	public String kakaoEx2DeletePost(String address) {
+		System.out.println("address : " + address);
+		
+		studyService.setkakaoEx2Delete(address);
+		
+		return "";
+	}
+	
+	
+	// 카카오 맵 ''
+	@RequestMapping(value = "/kakaoEx3", method = RequestMethod.GET)
+	public String kakaoEx3Get(Model model, 
+			@RequestParam(name = "address", defaultValue = "청주 그린컴퓨터", required = false) String address) {
+		
+		model.addAttribute("address",address);
+		return "study/kakaomap/kakaoEx3";
+	}
+	
+	// 카카오 맵 ''
+	@RequestMapping(value = "/kakaoEx4", method = RequestMethod.GET)
+	public String kakaoEx4Get() {
+		
+		return "study/kakaomap/kakaoEx4";
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "/kakaoEx3Save", method = RequestMethod.POST)
+	public String kakaoEx3SavePost(KakaoAddressVO vo) {
+		KakaoAddressVO searchVo = studyService.getKakaoAddressName(vo.getAddress());
+		
+		if(searchVo != null) return "0";
+		studyService.setKakaoAddressName(vo);
+		return "1";
+	}
+	
+	// 카카오 맵 ''
+	@RequestMapping(value = "/kakaoEx5", method = RequestMethod.GET)
+	public String kakaoEx5Get(Model model) {
+		
+		List<KakaoAddressVO> vos = studyService.getDistanceList();
+		
+		model.addAttribute("vos",vos);
+		
+		return "study/kakaomap/kakaoEx5";
+	}
+	
+	@RequestMapping(value = "/transaction/transaction", method = RequestMethod.GET)
+	public String transactionGet() {
+		return "study/transaction/transaction";
+	}
+	
+	@Transactional
+	// 트랙젝션 입력 1번폼(개별처리)
+	@RequestMapping(value = "/transaction/input1", method = RequestMethod.POST)
+	public String transactioninput1Post(TransactionVO vo) {
+		
+		studyService.setTransInput1(vo);		// user1 등록
+		studyService.setTransInput2(vo);		// user2 등록	
+		
+		return "study/transaction/transaction";
+	}
+	
+	// 트랙젝션 입력 2번폼(개별처리)
+	@RequestMapping(value = "/transaction/input2", method = RequestMethod.POST)
+	public String transactioninput2Post(TransactionVO vo) {
+		studyService.setTransInput(vo);		// user, user2에 등록
+		
+		return "study/transaction/transaction";
+	}
+	
+	// 트랙젝션 리스트
+	@RequestMapping(value = "/transaction/transactionList", method = RequestMethod.GET)
+	public String transactionListGet(Model model) {
+		List<TransactionVO> vos = studyService.setTransList();
+		model.addAttribute("vos", vos);
+		
+		return "study/transaction/transactionList";
+	}
 	
 }
 
